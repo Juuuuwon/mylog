@@ -53,7 +53,7 @@ def har_entry_to_curl(har_data):
         # User-Agent는 curl에서 기본적으로 설정하므로 중복 방지
         if header["name"].lower() not in ["content-length", "host", "accept"] and not (
             header["name"].lower() == "user-agent" and "curl" in header["value"].lower()
-        ):
+        ) and not (header_name.startswith("x-")):
             curl_cmd.extend(["-H", f"{header['name']}: {header['value']}"])
     
     # POST 데이터 추가
@@ -76,4 +76,4 @@ def har_entry_to_curl(har_data):
     # curl_cmd.append("-v")  # 상세 출력
     
     # 문자열로 변환 (쉘 이스케이핑 적용)
-    return (" ".join(shlex.quote(arg) if ' ' in arg else arg for arg in curl_cmd)).replace("\\", "")
+    return (" ".join(shlex.quote(arg) if ' ' in arg else arg for arg in curl_cmd))
