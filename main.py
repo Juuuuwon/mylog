@@ -6,7 +6,6 @@ from typing import Optional, Dict, Any
 
 import boto3
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from botocore.exceptions import InvalidSignatureException
 
 from utils.utils import parse_byte_string_to_json, har_entry_to_curl
 
@@ -163,7 +162,8 @@ def healthcheck():
             aws_secret_access_key=app.state.aws_secret_access_key
         )
         client.describe_log_groups(limit=1)
-    except InvalidSignatureException:
+    except Exception as e:
+        print(e)
         response["awscli"] = "invalid"
     
     return response
