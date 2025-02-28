@@ -12,6 +12,10 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     
+    permissions:
+      contents: read
+      packages: write
+
     steps:
     # 코드 체크아웃
     - name: Checkout code
@@ -21,29 +25,37 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
       
-    # Docker Hub 로그인
-    - name: Login to DockerHub
+    # GitHub Container Registry(GHCR) 로그인
+    - name: Login to GitHub Container Registry
       uses: docker/login-action@v2
       with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
         
     # 빌드 시간 기반 태그 생성
     - name: Generate build timestamp
       id: timestamp
-      run: echo "::set-output name=timestamp::$(date +'%Y%m%d%H%M%S')"
+      run: echo "timestamp=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
+        
+    # 이미지 이름을 소문자로 변환 (GHCR 요구사항)
+    - name: Prepare image name
+      id: prep
+      run: |
+        echo "image=$(echo ghcr.io/${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
         
     # Docker 이미지 빌드 및 푸시
     - name: Build and push Docker image
+      id: build
       uses: docker/build-push-action@v3
       with:
         context: .
         push: true
         tags: |
-          ${{ secrets.DOCKERHUB_USERNAME }}/mylog:latest
-          ${{ secrets.DOCKERHUB_USERNAME }}/mylog:${{ github.sha }}
-          ${{ secrets.DOCKERHUB_USERNAME }}/mylog:${{ steps.timestamp.outputs.timestamp }}
-        cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/mylog:latest
+          ${{ steps.prep.outputs.image }}:latest
+          ${{ steps.prep.outputs.image }}:${{ github.sha }}
+          ${{ steps.prep.outputs.image }}:${{ steps.timestamp.outputs.timestamp }}
+        cache-from: type=registry,ref=${{ steps.prep.outputs.image }}:latest
         cache-to: type=inline
         
     # 빌드 결과 정보 출력
