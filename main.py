@@ -100,7 +100,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
         
         log_stream_name = (
             f'{parsed_initial_data["tags"]["process_command_line"]} '
-            f'{datetime.datetime.now().strftime("%H:%M:%S")}~'
+            f'{datetime.datetime.now().strftime("%H:%M:%S").replace(":", ".")}~'
         )
         
         await create_log_stream(client, LOG_GROUP_NAME, log_stream_name)
