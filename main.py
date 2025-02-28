@@ -129,7 +129,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
         active_connections.remove(websocket)
         print("클라이언트 연결이 종료되었습니다.")
     except Exception as e:
-        print(f"오류 발생: {str(e)}")
+        print(e)
 
 @app.post("/credentials")
 async def update_credentials(credentials: CredentialsUpdate):
@@ -145,7 +145,8 @@ async def update_credentials(credentials: CredentialsUpdate):
         try:
             await websocket.close(code=1000)
             close_count += 1
-        except:
+        except Except as e:
+            print(e)
             pass
 
     return {"message": f"자격 증명이 성공적으로 업데이트되었습니다. 닫힌 연결 수 : {close_count}", "current_region": app.state.region_name}
@@ -161,8 +162,7 @@ def healthcheck():
             aws_secret_access_key=app.state.aws_secret_access_key
         )
         client.describe_log_groups(limit=1)
-    except Exception as e:
-        print(e)
+    except InvalidSignatureException:
         response["awscli"] = "invalid"
     
     return response
