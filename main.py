@@ -1,6 +1,3 @@
-"""
-AWS CloudWatch Logs로 로그를 전송하는 FastAPI WebSocket 애플리케이션
-"""
 import json
 from datetime import datetime
 from pydantic import BaseModel
