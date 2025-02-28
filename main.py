@@ -6,6 +6,7 @@ from typing import Optional, Dict, Any
 
 import boto3
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from botocore.exceptions import InvalidSignatureException
 
 from utils.utils import parse_byte_string_to_json, har_entry_to_curl
 
