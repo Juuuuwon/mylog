@@ -4,6 +4,7 @@ from pydantic import BaseModel
 import os
 from typing import Optional, Dict, Any
 
+import datetime
 import boto3
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 
@@ -99,7 +100,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
         
         log_stream_name = (
             f'{parsed_initial_data["tags"]["process_command_line"]} '
-            f'{parsed_initial_data["tags"]["event_id"]}'
+            f'{datetime.datetime.now().strftime("%H:%M:%S")}~'
         )
         
         await create_log_stream(client, LOG_GROUP_NAME, log_stream_name)
