@@ -145,9 +145,8 @@ async def update_credentials(credentials: CredentialsUpdate):
         try:
             await websocket.close(code=1000)
             close_count += 1
-        except Except as e:
+        except Exception as e:
             print(e)
-            pass
 
     return {"message": f"자격 증명이 성공적으로 업데이트되었습니다. 닫힌 연결 수 : {close_count}", "current_region": app.state.region_name}
 
