@@ -15,7 +15,7 @@ from utils.utils import parse_byte_string_to_json, har_entry_to_curl
 # 상수 정의
 LOG_GROUP_NAME = "/subtrace-proxy-logs"
 
-app = FastAPI()
+app = FastAPI(root_path="/mylog")
 
 
 class CredentialsUpdate(BaseModel):
