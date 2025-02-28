@@ -76,6 +76,4 @@ def har_entry_to_curl(har_data):
     # curl_cmd.append("-v")  # 상세 출력
     
     # 문자열로 변환 (쉘 이스케이핑 적용)
-
-    return ' '.join(curl_cmd)
-    # return (" ".join(shlex.quote(arg) if ' ' in arg else arg for arg in curl_cmd))
+    return (" ".join(shlex.quote(arg) if ' ' in arg else arg for arg in curl_cmd))
