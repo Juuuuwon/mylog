@@ -148,14 +148,7 @@ async def update_credentials(credentials: CredentialsUpdate):
         except:
             pass
 
-    return JSONResponse(
-        status_code=200, 
-        content={
-            "message": f"자격 증명이 성공적으로 업데이트되었습니다. 닫힌 연결 수 : {close_count}",
-            "updated_fields": updated_fields,
-            "current_region": app.state.region_name
-        }
-    )
+    return {"message": f"자격 증명이 성공적으로 업데이트되었습니다. 닫힌 연결 수 : {close_count}", "current_region": app.state.region_name}
 
 @app.get("/healthcheck")
 def healthcheck():
