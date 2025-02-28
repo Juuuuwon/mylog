@@ -59,7 +59,7 @@ async def send_log_event(
     sequence_token: Optional[str] = None
 ) -> str:
     timestamp = int(datetime.datetime.now().timestamp() * 1000)
-    log_message = json.dumps(log_data)
+    log_message = json.dumps(log_data).replace("\\", "")
     log_event = {"timestamp": timestamp, "message": log_message}
     
     if sequence_token:
