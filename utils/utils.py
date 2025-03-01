@@ -51,11 +51,11 @@ def har_entry_to_curl(har_data):
     # 헤더 추가
     for header in request.get("headers", []):
         # User-Agent는 curl에서 기본적으로 설정하므로 중복 방지
-        if header["name"].lower() not in ["content-length", "host", "accept"] and not (
-            header["name"].lower() == "user-agent" and "curl" in header["value"].lower()
-        ) and header["name"].lower().startswith("x-") == False:
+        if (header["name"].lower() not in ["content-length", "host", "accept"] and
+            not (header["name"].lower() == "user-agent" and "curl" in header["value"].lower()) and
+            not header["name"].lower().startswith(("x-", "accept-"))):
             curl_cmd.extend(["-H", f"{header['name']}: {header['value']}"])
-    
+            
     # POST 데이터 추가
     if "postData" in request and request["postData"].get("text"):
         # Content-Type 헤더 확인
